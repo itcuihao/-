@@ -17,7 +17,7 @@ func dealFunc(path string, fi os.FileInfo, err error) error {
 		return nil
 	}
 	name := fi.Name()
-	fmt.Println(name)
+	//fmt.Println(name)
 
 	file, err := os.Open(path)
 	if err != nil {
@@ -36,7 +36,7 @@ func dealFunc(path string, fi os.FileInfo, err error) error {
 	//  frompath := fmt.Sprintf(".\\%s",path)
 	topath := strings.Replace(frompath, "icon", "iconbak", 1)
 	fmt.Println(frompath)
-	fmt.Println(topath)
+	//fmt.Println(topath)
 	if err := os.Rename(frompath, topath); err != nil {
 		fmt.Println(fmt.Sprintf("%s文件搬移出错！", frompath))
 		return nil
