@@ -5,13 +5,13 @@ import (
 )
 
 func main() {
-	arrayX := [5]int{1, 2, 2, 2, 3}
-	fmt.Println("array:", arrayX)
+	arrayX := []int{1, 2, 2, 2, 3}
+	fmt.Println("arrayX:", arrayX)
 	l := RemoveElement(arrayX, 5, 2)
-	fmt.Println("length arrayX:", l)
+	fmt.Println("remove element length arrayX:", l)
 }
 
-func RemoveElement(A [5]int, n int, element int) int {
+func RemoveElement(A []int, n int, element int) int {
 	j := 0
 	for i := 0; i < n; i++ {
 		if A[i] == element {
