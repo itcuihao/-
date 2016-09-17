@@ -1,0 +1,39 @@
+#可执行文件
+!*.*
+#前端
+*.iml
+
+.idea/
+/out/
+.idea_modules/
+
+atlassian-ide-plugin.xml
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+*.DS_Store
+
+# 后端
+*.log
+*.o
+*.a
+*.so
+# Folders
+_obj
+_test
+static/temporary
+static/attachment
+# Architecture specific extensions/prefixes
+*.[568vq]
+[568vq].out
+*.cgo1.go
+*.cgo2.c
+_cgo_defun.c
+_cgo_gotypes.go
+_cgo_export.*
+_testmain.go
+*.exe
+*.test
+*.prof
+*.xlsm#
+*.DS_Store
