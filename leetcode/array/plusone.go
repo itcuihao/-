@@ -7,7 +7,7 @@ import (
 func main() {
 	fmt.Println("start...")
 
-	s := []int{1, 2}
+	s := []int{1, 4}
 	fmt.Println(s)
 	s2 := plusOne(s)
 	fmt.Println(s2)
