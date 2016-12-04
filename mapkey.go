@@ -13,7 +13,7 @@ func main() {
 	str := "abcde$@"
 	strbyte := []byte(str)
 	for k, v := range strbyte {
-		fmt.Println(k)
+		fmt.Print(k)
 		fmt.Println(string(v))
 	}
 	fmt.Println(str[2:3])
