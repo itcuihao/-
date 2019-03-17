@@ -16,6 +16,7 @@ package main
 // makemap_small 需要在堆上分配，
 // 如果编译器已确定该映射或第一个存储桶 makemap 会在栈上创建
 
+// 具体使用栈与堆还要看逃逸分析的结构
 // 栈性能比堆要好，makemap_small 为啥用堆呢？
 
 // https://github.com/EDDYCJY/blog/blob/master/golang/pkg/2019-03-04-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3Go-map-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%92%8C%E8%AE%BF%E9%97%AE%E5%85%83%E7%B4%A0.md
@@ -88,6 +89,19 @@ package main
 // map 不会收缩 “不再使用” 的空间。就算把所有键值删除，它依然保留内存空间以待后用。
 // 如果一个非常大的map里面的元素很少的话，可以考虑新建一个map将老的map元素手动复制到新的map中。
 
+// mapaccess1：返回 h[key] 的指针地址，如果键不在 map 中，将返回对应类型的零值
+// mapaccess2：返回 h[key] 的指针地址，如果键不在 map 中，将返回零值和布尔值用于判断
+// 执行步骤
+// 判断 map 是否为 nil，长度是否为 0。若是则返回零值
+// 判断当前是否并发读写 map，若是则抛出异常
+// 根据 key 的不同类型调用不同的 hash 方法计算得出 hash 值
+// 确定 key 在哪一个 bucket 中，并得到其位置
+// 判断是否正在发生扩容（h.oldbuckets 是否为 nil），若正在扩容，则到老的 buckets 中查找（因为 buckets 中可能还没有值，搬迁未完成），若该 bucket 已经搬迁完毕。则到 buckets 中继续查找
+// 计算 hash 的 tophash 值（高八位）
+// 根据计算出来的 tophash，依次循环对比 buckets 的 tophash 值（快速试错）
+// 如果 tophash 匹配成功，则计算 key 的所在位置，正式完整的对比两个 key 是否一致
+// 若查找成功并返回，若不存在，则返回零值
+
 const (
 	// Maximum number of key/value pairs a bucket can hold.
 	//桶可容纳的最大键/值对数。
@@ -103,13 +117,10 @@ const (
 // Maximum average load of a bucket that triggers growth.loadFactor =6.5）。
 // 所以预估容量就比较重要了。既能减少空间浪费，同时能避免运行时多次内存复制和rehash。
 
-// func main() {
-// 	m := make(map[int]int, 9)
-// 	m[1] = 1
-// 	fmt.Println(m)
-
-// 	fmt.Println(bucketCnt)
-// }
+func main() {
+	m := make(map[int]int, 9)
+	m[1] = 1
+}
 
 // 0x0028 00040 (.\m1.go:6)        PCDATA  $2, $1
 // 0x0028 00040 (.\m1.go:6)        PCDATA  $0, $0
@@ -137,13 +148,13 @@ const (
 // 0x0077 00119 (.\m1.go:7)        MOVQ    $1, (AX)
 
 // go tool compile -m -S .\m1.go
-func main() {
-	m := make(map[int]int, 3)
-	m[1] = 1
-	// 会导致m 逃逸到堆
-	// fmt.Println(m)
-	println(m)
-}
+// func main() {
+// 	m := make(map[int]int, 3)
+// 	m[1] = 1
+// 	// 会导致m 逃逸到堆
+// 	// fmt.Println(m)
+// 	println(m)
+// }
 
 // func main() {
 // 	m := make(map[int]int, 8)
