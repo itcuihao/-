@@ -12,8 +12,13 @@ func main() {
 	fmt.Printf("%x %P\n", c, c)
 
 	u := User{
-		Name: "a",
+		// Name: "a", // cannot use promoted field A.Name in struct literal of type User
+		A: A{
+			Name: "a",
+		},
 	}
+
+	fmt.Println(u)
 }
 
 func i(s string) interface{} {
