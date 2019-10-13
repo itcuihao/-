@@ -4,8 +4,31 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
+	"sort"
 	"strings"
 )
+
+var (
+	logger  *log.Logger
+	logFile *os.File
+	err     error
+	note    = `
+		春哥需要做的事：
+		1. 在本层目录，新建名为 'data' 的文件夹。
+		2. 然后将后缀为 '.fasta' 的文件复制到 'data' 文件夹内部。`
+	end = "-----------------------------报告春哥，分析完成！-----------------------------------"
+)
+
+func init() {
+	// logFile, err = os.Create("fasta.log")
+	logFile, err = os.OpenFile("fasta.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0777)
+	if err != nil {
+		log.Fatalf("open file error=%s\r\n", err.Error())
+	}
+
+	logger = log.New(logFile, "", log.LstdFlags)
+}
 
 var gene = map[string]string{
 	"GGGCCC":   "Apal",
@@ -33,35 +56,47 @@ func getGene() map[string]string {
 }
 
 func main() {
+	defer logFile.Close()
+	logger.Println("-----------------------------浩仔分析中-----------------------------------")
 	path, err := getDirFile("./data")
 	if err != nil {
-		log.Fatal(err)
+		logger.Println(err)
+		logger.Println(note)
+		logger.Println(end)
+		return
 	}
-	log.Println("目录文件：", path)
+	logger.Println("分析结果，有文件：", "“"+strings.Join(path, "”，“")+"”")
+
+	if len(path) == 0 {
+		logger.Println("请复制.fasta文件到data目录内")
+		logger.Println(end)
+		return
+	}
 
 	notGene := getGene()
 	for _, f := range path {
 		fbyte, err := ioutil.ReadFile(f)
 		if err != nil {
-			log.Println(err)
+			logger.Println(err)
 			continue
 		}
 		fstr := string(fbyte)
-		for seq := range gene {
+		for seq, enzyme := range gene {
 			index := SearchString(fstr, seq)
 			if index >= 0 {
-				log.Printf("%s 存在序列：%s，位置：%d；\n", f, seq, index)
+				logger.Printf("文件：“%s” 存在酶：%s，识别序列：%s，位置：%d；\n", f, enzyme, seq, index)
 				delete(notGene, seq)
 			}
 		}
 	}
 
-	log.Println("文件中都不存在的为：")
 	enzyme := make([]string, 0, len(notGene))
 	for _, e := range notGene {
 		enzyme = append(enzyme, e)
 	}
-	log.Println("酶：", enzyme)
+	sort.Strings(enzyme)
+	logger.Println("文件中都不存在的酶：", enzyme)
+	logger.Println(end)
 }
 
 func getDirFile(d string) ([]string, error) {
