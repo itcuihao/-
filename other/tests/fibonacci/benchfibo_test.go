@@ -1,4 +1,4 @@
-package Fibonacci
+package fibonacci
 
 import (
 	"testing"
