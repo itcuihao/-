@@ -37,9 +37,13 @@ func TestChanPay(t *testing.T) {
 }
 
 func TestChPay(t *testing.T) {
-	chpay_regi.RegisterWeChat(apiKey, appid, mchid)
+	chpay_regi.PayConf().RegisterWeChat(apiKey, appid, mchid)
 	no:=strconv.FormatInt(time.Now().UnixNano(),10)
-	payer := chpay.NewPayer(1)
+	payer ,err:= chpay.NewPayer(1)
+	if err!=nil{
+		t.Log(err)
+		return
+	}
 	req := chpay_com.UnifiedOrderRequest{
 		SignType:    "MD5",
 		OutTradeNo:  no,
@@ -53,9 +57,4 @@ func TestChPay(t *testing.T) {
 	res, err := payer.UnifiedOrder(req)
 	t.Log(err)
 	t.Logf("res: %+v", res)
-}
-
-// 放弃压测
-func Becnchmark_ChanPay(t *testing.B) {
-
 }
