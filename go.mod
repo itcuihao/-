@@ -9,6 +9,7 @@ require (
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/chanxuehong/wechat v0.0.0-20190521093015-fafb751f9916
 	github.com/go-ole/go-ole v1.2.4 // indirect
+	github.com/go-redis/redis v6.15.6+incompatible // indirect
 	github.com/shirou/gopsutil v2.19.10+incompatible
 	github.com/shirou/w32 v0.0.0-20160930032740-bb4de0191aa4 // indirect
 	golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e // indirect
