@@ -1,6 +1,7 @@
 package c2
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -20,7 +21,10 @@ func clock1() {
 			log.Print(err)
 			continue
 		}
+		// 同步处理
+		// handleConn(conn)
 
+		// 异步处理
 		go handleConn(conn)
 	}
 }
@@ -33,6 +37,7 @@ func handleConn(c net.Conn) {
 			return
 		}
 		time.Sleep(time.Second * 1)
+		fmt.Println("send: ", c.RemoteAddr().String())
 	}
 }
 

@@ -24,6 +24,10 @@ func pipeline1() {
 	for {
 		fmt.Println(<-squares)
 	}
+
+	//for square := range squares {
+	//	fmt.Println(square)
+	//}
 }
 
 func pipeline2() {
@@ -31,7 +35,7 @@ func pipeline2() {
 	squares := make(chan int)
 
 	go func() {
-		for x := 0; x < 100; x++ {
+		for x := 0; x < 10; x++ {
 			naturals <- x
 		}
 		close(naturals)
