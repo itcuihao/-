@@ -12,3 +12,7 @@ func TestBinarySearch(t *testing.T) {
 	index := binarySearch(31, a)
 	t.Log(index)
 }
+
+func TestPlist(t *testing.T) {
+	plist()
+}
